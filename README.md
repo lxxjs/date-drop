@@ -17,12 +17,30 @@ A lightweight Flask web app for a campus dating flow:
 
 ## Project Structure
 
-- `app.py` - Flask app and API/routes
-- `index.html`, `style.css`, `script.js` - landing page
-- `questions.html`, `questions.css`, `questions.js` - onboarding questionnaire
-- `home.html`, `home.css` - matches home page
-- `cupid.html`, `cupid.css`, `cupid.js` - cupid page
-- `requirements.txt` - Python dependencies
+```
+date-drop/
+├── app.py                      # Flask app, routes, and API
+├── requirements.txt
+├── .env.example
+├── templates/
+│   ├── index.html              # Landing page
+│   ├── questions.html          # Onboarding questionnaire
+│   ├── home.html               # Matches home page
+│   └── cupid.html              # Cupid page
+├── static/
+│   ├── css/
+│   │   ├── base.css            # Shared reset, logo, topbar styles
+│   │   ├── landing.css         # Landing page styles
+│   │   ├── questions.css       # Questionnaire styles
+│   │   ├── home.css            # Home page styles
+│   │   └── cupid.css           # Cupid page styles
+│   ├── js/
+│   │   ├── landing.js          # Landing page logic
+│   │   ├── questions.js        # Questionnaire logic
+│   │   └── cupid.js            # Cupid page logic
+│   └── images/
+│       └── questions*.jpg      # Question reference screenshots
+```
 
 ## Local Setup
 

@@ -1,26 +1,7 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
+/* ========= QUESTIONS PAGE ========= */
 body {
-  margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
   color: #2d1d1d;
   background: linear-gradient(180deg, #f7efe6 0%, #f3e4e4 100%);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-input,
-textarea,
-select,
-button {
-  font: inherit;
 }
 
 .questionnaire-body {
@@ -35,24 +16,6 @@ button {
   justify-content: space-between;
   align-items: flex-start;
   gap: 24px;
-}
-
-.logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Lora', serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.logo-icon {
-  width: 22px;
-  height: 28px;
-}
-
-.logo--dark {
-  color: #521f2f;
 }
 
 .header-copy {

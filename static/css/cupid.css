@@ -1,79 +1,11 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
+/* ========= CUPID PAGE ========= */
 body {
-  margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
   color: #2b1d1d;
   background: #ffffff;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
 .cupid-body {
   min-height: 100vh;
-}
-
-.topbar {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 22px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Lora', serif;
-  font-size: 1.9rem;
-  font-weight: 700;
-}
-
-.logo-icon {
-  width: 28px;
-  height: 34px;
-}
-
-.logo--dark {
-  color: #1f1616;
-}
-
-.menu {
-  display: inline-flex;
-  align-items: center;
-  gap: 28px;
-  font-family: 'Lora', serif;
-  font-size: 1.6rem;
-  color: #8e3e4e;
-}
-
-.menu a {
-  padding: 8px 12px;
-  border-radius: 999px;
-}
-
-.menu a.is-active {
-  background: #f6d9de;
-  color: #4f1f2a;
-}
-
-.signout-btn {
-  border: 1px solid #d9d2d2;
-  border-radius: 999px;
-  padding: 14px 28px;
-  background: white;
-  font-weight: 600;
-  cursor: pointer;
 }
 
 .cupid-shell {
@@ -235,16 +167,6 @@ a {
 }
 
 @media (max-width: 980px) {
-  .topbar {
-    flex-wrap: wrap;
-  }
-
-  .menu {
-    order: 3;
-    width: 100%;
-    justify-content: center;
-  }
-
   .cupid-form input {
     font-size: 1.15rem;
     height: 54px;
@@ -256,16 +178,6 @@ a {
 }
 
 @media (max-width: 760px) {
-  .menu {
-    font-size: 1.1rem;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .signout-btn {
-    padding: 10px 16px;
-  }
-
   .cupid-shell {
     padding-left: 16px;
     padding-right: 16px;

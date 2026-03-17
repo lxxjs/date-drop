@@ -7,7 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="questions.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/questions.css') }}" />
 </head>
 <body class="questionnaire-body">
   <header class="questionnaire-header">
@@ -124,7 +125,7 @@
         <div class="step-heading">
           <p class="step-kicker">Preferences</p>
           <h2>Age, graduation, religion, and values</h2>
-          <p>We also included the two “I want to be a ____ person” grids from your screenshots.</p>
+          <p>We also included the two "I want to be a ____ person" grids from your screenshots.</p>
         </div>
 
         <div class="field-grid two-up">
@@ -254,7 +255,7 @@
           </div>
           <div class="logistics-copy">
             <h3>Verify your phone</h3>
-            <p>Send us a quick text to verify your number and save our contact. We’ll add the real QR / SMS step later.</p>
+            <p>Send us a quick text to verify your number and save our contact. We'll add the real QR / SMS step later.</p>
             <label class="field">
               <span>Phone number</span>
               <input type="tel" name="phoneNumber" placeholder="+86 138 0000 0000" />
@@ -280,6 +281,6 @@
     </form>
   </main>
 
-  <script src="questions.js"></script>
+  <script src="{{ url_for('static', filename='js/questions.js') }}"></script>
 </body>
 </html>

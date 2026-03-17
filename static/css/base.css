@@ -1,0 +1,134 @@
+/* ========= RESET & BASE ========= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #1a1a1a;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+/* ========= LOGO ========= */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Lora', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.01em;
+}
+
+.logo-icon {
+  width: 22px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.logo--dark {
+  color: #521f2f;
+}
+
+.logo--light {
+  color: white;
+  display: inline-flex;
+}
+
+/* ========= TOPBAR (shared by home & cupid) ========= */
+.topbar {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.topbar .logo {
+  font-size: 1.9rem;
+  color: #1f1616;
+}
+
+.topbar .logo-icon {
+  width: 28px;
+  height: 34px;
+}
+
+.menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  font-family: 'Lora', serif;
+  font-size: 1.6rem;
+  color: #8e3e4e;
+}
+
+.menu a {
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+.menu a.is-active {
+  background: #f6d9de;
+  color: #4f1f2a;
+}
+
+.signout-btn {
+  border: 1px solid #d9d2d2;
+  border-radius: 999px;
+  padding: 14px 28px;
+  background: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ========= TOPBAR RESPONSIVE ========= */
+@media (max-width: 960px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .menu {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 700px) {
+  .topbar .logo {
+    font-size: 1.5rem;
+  }
+
+  .menu {
+    font-size: 1.1rem;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .signout-btn {
+    padding: 10px 16px;
+  }
+}

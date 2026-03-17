@@ -120,7 +120,6 @@ buildScaleGroup('scaleGroupOne', SCALE_GROUP_ONE);
 buildScaleGroup('scaleGroupTwo', SCALE_GROUP_TWO);
 buildScaleGroup('scaleGroupThree', SCALE_GROUP_THREE);
 
-// Show email from URL in the badge
 const emailParam = new URLSearchParams(window.location.search).get('email');
 const badge = document.getElementById('emailBadge');
 if (emailParam && badge) badge.textContent = emailParam;

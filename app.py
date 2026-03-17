@@ -1,3 +1,4 @@
+import json
 import os
 import secrets
 import smtplib
@@ -6,7 +7,7 @@ import time
 from email.message import EmailMessage
 from pathlib import Path
 
-from flask import Flask, jsonify, request, session, send_from_directory, redirect
+from flask import Flask, jsonify, redirect, render_template, request, session
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -41,7 +42,7 @@ SMTP_FROM = os.getenv("SMTP_FROM", SMTP_USERNAME)
 SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "true").lower() == "true"
 SMTP_USE_SSL = os.getenv("SMTP_USE_SSL", "false").lower() == "true"
 
-app = Flask(__name__, static_folder=".", static_url_path="")
+app = Flask(__name__)
 app.secret_key = os.getenv("APP_SECRET_KEY", "date-drop-dev-secret")
 
 verification_store = {}
@@ -127,9 +128,12 @@ def send_verification_email(email: str, code: str) -> None:
         server.send_message(message)
 
 
+# ── Page routes ──────────────────────────────────────────────
+
+
 @app.get("/")
 def index():
-    return send_from_directory(BASE_DIR, "index.html")
+    return render_template("index.html")
 
 
 @app.get("/questions")
@@ -140,17 +144,20 @@ def questions():
         session["verified_email"] = email
         return redirect("/home")
 
-    return send_from_directory(BASE_DIR, "questions.html")
+    return render_template("questions.html")
 
 
 @app.get("/home")
 def home():
-    return send_from_directory(BASE_DIR, "home.html")
+    return render_template("home.html")
 
 
 @app.get("/cupid")
 def cupid():
-    return send_from_directory(BASE_DIR, "cupid.html")
+    return render_template("cupid.html")
+
+
+# ── API routes ───────────────────────────────────────────────
 
 
 @app.post("/api/send-code")
@@ -268,8 +275,6 @@ def save_profile():
 
     if not isinstance(answers, dict) or not answers:
         return jsonify({"ok": False, "message": "No questionnaire answers received."}), 400
-
-    import json
 
     submitted_at = int(time.time())
 

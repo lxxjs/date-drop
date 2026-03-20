@@ -1,0 +1,127 @@
+/* ── Chat layout ──────────────────────────────────────────── */
+
+.chat-body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-shell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* ── Messages area ────────────────────────────────────────── */
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chat-loading,
+.chat-empty,
+.chat-error {
+  text-align: center;
+  color: var(--clr-muted, #888);
+  padding: 3rem 1rem;
+  font-size: 0.95rem;
+}
+
+.chat-error {
+  color: var(--clr-danger, #e53935);
+}
+
+/* ── Bubbles ──────────────────────────────────────────────── */
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 0.65rem 1rem;
+  border-radius: 1rem;
+  word-break: break-word;
+}
+
+.chat-bubble--mine {
+  align-self: flex-end;
+  background: var(--clr-primary, #FF2D55);
+  color: #fff;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.chat-bubble--theirs {
+  align-self: flex-start;
+  background: var(--clr-surface, #f1f1f1);
+  color: var(--clr-text, #1a1a1a);
+  border-bottom-left-radius: 0.25rem;
+}
+
+.chat-text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.chat-time {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  text-align: right;
+}
+
+.chat-bubble--theirs .chat-time {
+  text-align: left;
+}
+
+/* ── Input bar ────────────────────────────────────────────── */
+
+.chat-input-bar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--clr-border, #e0e0e0);
+  background: #fff;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--clr-border, #e0e0e0);
+  border-radius: 1.5rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.chat-input:focus {
+  border-color: var(--clr-primary, #FF2D55);
+}
+
+.chat-send-btn {
+  padding: 0.6rem 1.25rem;
+  background: var(--clr-primary, #FF2D55);
+  color: #fff;
+  border: none;
+  border-radius: 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.chat-send-btn:hover {
+  opacity: 0.9;
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

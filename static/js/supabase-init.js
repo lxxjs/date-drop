@@ -1,0 +1,48 @@
+/* global supabase */
+
+/**
+ * Initialize the Supabase client.
+ * SUPABASE_URL and SUPABASE_ANON_KEY are injected by Flask templates as global vars.
+ */
+const sb = supabase.createClient(
+  window.__SUPABASE_URL__,
+  window.__SUPABASE_ANON_KEY__,
+);
+
+/**
+ * After a successful OTP verification, send the tokens to the Flask backend
+ * so it can set secure httpOnly cookies for server-side auth.
+ */
+async function syncSession(session) {
+  if (!session) return;
+  await fetch('/api/auth/session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+    }),
+  });
+}
+
+/**
+ * Fetch the list of allowed school email domains from the backend.
+ */
+let _allowedDomains = null;
+async function getAllowedDomains() {
+  if (_allowedDomains) return _allowedDomains;
+  try {
+    const res = await fetch('/api/allowed-schools');
+    const data = await res.json();
+    _allowedDomains = (data.schools || []).map((s) => s.domain);
+  } catch {
+    // Fallback to hardcoded if endpoint is unreachable
+    _allowedDomains = ['@stu.pku.edu.cn', '@mails.tsinghua.edu.cn'];
+  }
+  return _allowedDomains;
+}
+
+function isAllowedSchoolEmail(email, domains) {
+  const normalized = email.trim().toLowerCase();
+  return domains.some((domain) => normalized.endsWith(domain));
+}

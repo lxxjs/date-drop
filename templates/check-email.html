@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Date Drop | Verify your email</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}" />
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-overlay"></div>
+
+    <nav class="nav">
+      <a href="/" class="logo logo--dark">
+        <svg class="logo-icon" viewBox="0 0 24 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 7.5 12 18 12 18S24 19.5 24 12C24 5.373 18.627 0 12 0zm0 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
+        </svg>
+        <span>date drop.</span>
+      </a>
+    </nav>
+
+    <div class="hero-content">
+      <h1 class="hero-headline">Check your email</h1>
+      <p class="hero-sub">We sent a verification code to <strong id="emailDisplay">{{ email }}</strong></p>
+      <div class="hero-form">
+        <input
+          type="text"
+          id="codeInput"
+          class="code-input"
+          placeholder="000000"
+          maxlength="6"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+        />
+        <button id="verifyBtn" class="btn-start" disabled>Verify</button>
+        <div class="verify-actions">
+          <button type="button" id="resendBtn" class="link-btn" disabled>Resend code <span id="resendTimer"></span></button>
+          <a href="/" class="link-btn">Use a different email</a>
+        </div>
+        <p class="form-hint">Enter the 6-digit code, or click the link in the email.</p>
+        <p id="statusMessage" class="status-message" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    window.__verifyEmail = {{ email | tojson }};
+  </script>
+  <script src="{{ url_for('static', filename='js/verify.js') }}"></script>
+</body>
+</html>

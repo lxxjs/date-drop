@@ -206,13 +206,27 @@ document.getElementById('questionnaireForm').addEventListener('submit', async (e
   const answers = collectFormAnswers(e.currentTarget);
 
   try {
+    // Upload photo first if one is selected
+    const photoFile = photoUpload && photoUpload.files ? photoUpload.files[0] : null;
+    if (photoFile) {
+      const photoData = new FormData();
+      photoData.append('photo', photoFile);
+      const photoRes = await fetch('/api/profile/photo', {
+        method: 'POST',
+        credentials: 'same-origin',
+        body: photoData,
+      });
+      const photoResult = await photoRes.json();
+      if (photoRes.ok && photoResult.ok) {
+        answers.photoUrl = photoResult.photo_url;
+      }
+    }
+
     const response = await fetch('/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: emailParam || '',
-        answers,
-      }),
+      credentials: 'same-origin',
+      body: JSON.stringify({ answers }),
     });
 
     const result = await response.json();

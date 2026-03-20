@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Date Drop | Home</title>
+  <title>Date Drop | Chat</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}" />
 </head>
-<body class="home-body">
+<body class="chat-body">
   <header class="topbar">
     <a href="/home" class="logo logo--dark">
       <svg class="logo-icon" viewBox="0 0 24 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -22,27 +22,38 @@
     <nav class="menu">
       <a href="/home">Home</a>
       <a href="/cupid">Cupid</a>
-      <a href="/home" class="is-active">Matches</a>
-      <a href="#">Profile</a>
+      <a href="/home">Matches</a>
     </nav>
 
-    <button class="signout-btn" type="button" id="signOutBtn">Sign Out</button>
+    <a href="/home" class="btn-ghost btn-sm">Back to matches</a>
   </header>
 
-  <main class="home-shell">
-    <section class="matches-hero">
-      <h1>Matches</h1>
-    </section>
+  <main class="chat-shell">
+    <div class="chat-messages" id="chatMessages">
+      <p class="chat-loading">Loading messages...</p>
+    </div>
 
-    <!-- Matches or empty state rendered by home.js -->
+    <form class="chat-input-bar" id="chatForm">
+      <input
+        type="text"
+        id="chatInput"
+        class="chat-input"
+        placeholder="Type a message..."
+        autocomplete="off"
+        maxlength="2000"
+        required
+      />
+      <button type="submit" class="chat-send-btn">Send</button>
+    </form>
   </main>
 
   <script>
     window.__SUPABASE_URL__ = {{ supabase_url | tojson }};
     window.__SUPABASE_ANON_KEY__ = {{ supabase_anon_key | tojson }};
+    window.__MATCH_ID__ = {{ match_id | tojson }};
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="{{ url_for('static', filename='js/supabase-init.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>

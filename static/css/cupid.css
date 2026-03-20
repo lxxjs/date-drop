@@ -1,7 +1,7 @@
 /* ========= CUPID PAGE ========= */
 body {
-  color: #2b1d1d;
-  background: #ffffff;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
 }
 
 .cupid-body {
@@ -16,20 +16,14 @@ body {
 
 .cupid-hero {
   position: relative;
-  border-radius: 28px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(73, 91, 133, 0.28), rgba(71, 98, 143, 0.58)),
-    url("https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=1400&q=80");
-  background-size: cover;
-  background-position: center;
-  min-height: 620px;
+  background: linear-gradient(135deg, #FF2D55 0%, #FF6B8A 60%, #FFB3C1 100%);
+  min-height: 500px;
 }
 
 .cupid-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.22));
+  display: none;
 }
 
 .cupid-hero-content {
@@ -42,68 +36,91 @@ body {
 
 .cupid-hero h1 {
   margin: 0 0 10px;
-  font-family: 'Lora', serif;
+  font-family: var(--font-display);
   font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .cupid-hero p {
   margin: 0 0 22px;
   max-width: 620px;
-  font-size: clamp(1rem, 2vw, 1.9rem);
-  font-weight: 600;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: var(--font-weight-semibold);
   line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .cupid-form {
   display: grid;
   gap: 14px;
-  max-width: 620px;
+  max-width: 480px;
 }
 
 .cupid-form input {
-  height: 66px;
-  border: none;
-  border-radius: 18px;
-  padding: 0 20px;
-  font-size: 2rem;
-  color: #292929;
+  height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 0 18px;
+  font-size: 1.1rem;
+  color: var(--color-text-primary);
+  background: white;
+  box-shadow: var(--shadow-md);
 }
 
 .cupid-form input::placeholder {
-  color: #8f8f8f;
+  color: var(--color-text-tertiary);
+}
+
+.cupid-form input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-lg);
 }
 
 .search-link {
   text-decoration: underline;
   text-underline-offset: 3px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   width: fit-content;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.search-link:hover {
+  color: white;
 }
 
 .ship-btn {
   width: fit-content;
-  border: 1px solid #5a0f17;
-  border-radius: 999px;
+  border: none;
+  border-radius: var(--radius-md);
   padding: 14px 26px;
-  background: #861625;
-  color: #fff;
-  font-size: 1.9rem;
-  font-family: 'Lora', serif;
-  font-weight: 700;
+  background: white;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.ship-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
 }
 
 .ship-btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+  transform: none;
 }
 
 .ship-status {
   min-height: 1.4em;
   margin: 0;
   font-size: 1rem;
-  font-weight: 600;
-  color: #fff2d8;
+  font-weight: var(--font-weight-semibold);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .cupid-slots {
@@ -116,27 +133,29 @@ body {
 
 .slot {
   min-height: 206px;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(1px);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.15);
   display: grid;
   place-items: center;
   font-size: 3rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .leaderboard {
   margin-top: 34px;
-  border-radius: 30px;
+  border-radius: var(--radius-xl);
   padding: 28px 34px 36px;
-  background: #ffeef0;
-  border: 1px solid #f2d5da;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary-tint);
 }
 
 .leaderboard h2 {
   margin: 0 0 22px;
-  font-family: 'Lora', serif;
+  font-family: var(--font-display);
   font-size: clamp(2rem, 4vw, 3.8rem);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
 }
 
 .leaderboard table {
@@ -154,7 +173,8 @@ body {
   font-size: 0.95rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  border-bottom: 1px solid #eac2cb;
+  border-bottom: 1px solid var(--color-primary-tint);
+  color: var(--color-text-secondary);
 }
 
 .leaderboard tbody td {
@@ -168,12 +188,12 @@ body {
 
 @media (max-width: 980px) {
   .cupid-form input {
-    font-size: 1.15rem;
-    height: 54px;
+    font-size: 1rem;
+    height: 48px;
   }
 
   .ship-btn {
-    font-size: 1.35rem;
+    font-size: 1rem;
   }
 }
 

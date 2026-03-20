@@ -6,7 +6,7 @@
   <title>Date Drop | Cupid</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/cupid.css') }}" />
 </head>
@@ -26,7 +26,7 @@
       <a href="#">Profile</a>
     </nav>
 
-    <button class="signout-btn" type="button" onclick="window.location.href='/'">Sign Out</button>
+    <button class="signout-btn" type="button" id="signOutBtn">Sign Out</button>
   </header>
 
   <main class="cupid-shell">
@@ -73,6 +73,12 @@
     </section>
   </main>
 
+  <script>
+    window.__SUPABASE_URL__ = {{ supabase_url | tojson }};
+    window.__SUPABASE_ANON_KEY__ = {{ supabase_anon_key | tojson }};
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="{{ url_for('static', filename='js/supabase-init.js') }}"></script>
   <script src="{{ url_for('static', filename='js/cupid.js') }}"></script>
 </body>
 </html>

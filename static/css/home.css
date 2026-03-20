@@ -1,11 +1,11 @@
 /* ========= HOME PAGE ========= */
 body {
-  color: #2b1d1d;
+  color: var(--color-text-primary);
 }
 
 .home-body {
   min-height: 100vh;
-  background: #ffffff;
+  background: var(--color-bg);
 }
 
 .home-shell {
@@ -16,30 +16,28 @@ body {
 
 .matches-hero {
   min-height: 262px;
-  border-radius: 28px;
+  border-radius: var(--radius-xl);
   padding: 34px 44px;
   display: flex;
   align-items: flex-end;
-  background:
-    linear-gradient(180deg, rgba(63, 84, 130, 0.35), rgba(40, 64, 108, 0.62)),
-    url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1400&q=80");
-  background-size: cover;
-  background-position: center 42%;
+  background: linear-gradient(135deg, #FF2D55 0%, #FF6B8A 100%);
 }
 
 .matches-hero h1 {
   margin: 0;
   color: #ffffff;
-  font-family: 'Lora', serif;
+  font-family: var(--font-display);
   font-size: clamp(2.8rem, 5vw, 4.8rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .empty-state-card {
   margin-top: 44px;
   min-height: 540px;
-  border: 1px solid #f0ecec;
-  border-radius: 30px;
-  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
   display: grid;
   place-items: center;
   text-align: center;
@@ -49,50 +47,137 @@ body {
 .polaroid {
   width: 300px;
   height: 340px;
-  background: #ffffff;
-  border: 1px solid #efefef;
-  box-shadow: 0 10px 40px rgba(18, 18, 18, 0.08);
-  border-radius: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-md);
   padding: 18px;
-  transform: rotate(-4deg);
   margin-bottom: 28px;
 }
 
 .polaroid-photo {
   width: 100%;
   height: 240px;
-  border-radius: 2px;
-  background:
-    linear-gradient(180deg, rgba(34, 34, 34, 0.18), rgba(34, 34, 34, 0.18)),
-    url("https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=900&q=80");
-  background-size: cover;
-  background-position: center;
-  filter: grayscale(1);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
 }
 
 .empty-state-card h2 {
   margin: 0 0 12px;
-  font-family: 'Lora', serif;
+  font-family: var(--font-display);
   font-size: clamp(2.1rem, 5vw, 3.4rem);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
 }
 
 .empty-state-card p {
   margin: 0;
   font-size: clamp(1.2rem, 2.4vw, 2rem);
-  color: #6e6363;
+  color: var(--color-text-secondary);
+}
+
+/* ── Match cards grid ─────────────────────────────────────── */
+
+.matches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.match-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.match-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.match-photo {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.match-photo--placeholder {
+  background: linear-gradient(135deg, #ffe0e6 0%, #f5f5f5 100%);
+}
+
+.match-info {
+  padding: 1.25rem;
+}
+
+.match-info h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.match-major {
+  margin: 0 0 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.match-score {
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+  color: var(--clr-primary, #FF2D55);
+  font-size: 1rem;
+}
+
+.match-reasons {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.match-reasons li {
+  margin-bottom: 0.25rem;
+}
+
+.match-date-ideas {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.match-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.match-status {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+}
+
+.btn-sm {
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  border-radius: var(--radius-md);
 }
 
 @media (max-width: 700px) {
   .matches-hero {
     min-height: 190px;
     padding: 20px;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
   }
 
   .empty-state-card {
     min-height: 420px;
     margin-top: 24px;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
   }
 
   .polaroid {

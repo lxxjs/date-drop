@@ -1,3 +1,48 @@
+/* ========= DESIGN TOKENS ========= */
+:root {
+  /* Colors */
+  --color-primary: #FF2D55;
+  --color-primary-hover: #E6264C;
+  --color-primary-light: #FFF0F3;
+  --color-primary-tint: #FFE0E6;
+  --color-bg: #FFFFFF;
+  --color-bg-secondary: #F5F5F7;
+  --color-surface: #FFFFFF;
+  --color-text-primary: #1D1D1F;
+  --color-text-secondary: #6E6E73;
+  --color-text-tertiary: #AEAEB2;
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-border-strong: rgba(0, 0, 0, 0.12);
+  --color-success: #34C759;
+  --color-success-bg: #F0FFF4;
+  --color-footer-bg: #1D1D1F;
+
+  /* Typography */
+  --font-display: -apple-system, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  --font-body: -apple-system, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.1);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}
+
 /* ========= RESET & BASE ========= */
 *,
 *::before,
@@ -12,8 +57,13 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  color: #1a1a1a;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+}
+
+::selection {
+  background: var(--color-primary-tint);
+  color: var(--color-text-primary);
 }
 
 a {
@@ -33,11 +83,11 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Lora', serif;
+  font-family: var(--font-display);
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: white;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .logo-icon {
@@ -47,7 +97,7 @@ button {
 }
 
 .logo--dark {
-  color: #521f2f;
+  color: var(--color-text-primary);
 }
 
 .logo--light {
@@ -67,41 +117,53 @@ button {
 }
 
 .topbar .logo {
-  font-size: 1.9rem;
-  color: #1f1616;
+  font-size: 1.5rem;
+  color: var(--color-text-primary);
 }
 
 .topbar .logo-icon {
-  width: 28px;
-  height: 34px;
+  width: 26px;
+  height: 32px;
 }
 
 .menu {
   display: inline-flex;
   align-items: center;
-  gap: 28px;
-  font-family: 'Lora', serif;
-  font-size: 1.6rem;
-  color: #8e3e4e;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-text-secondary);
 }
 
 .menu a {
-  padding: 8px 12px;
-  border-radius: 999px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-medium);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.menu a:hover {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
 }
 
 .menu a.is-active {
-  background: #f6d9de;
-  color: #4f1f2a;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .signout-btn {
-  border: 1px solid #d9d2d2;
-  border-radius: 999px;
-  padding: 14px 28px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
   background: white;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.signout-btn:hover {
+  background: var(--color-bg-secondary);
 }
 
 /* ========= TOPBAR RESPONSIVE ========= */
@@ -119,16 +181,17 @@ button {
 
 @media (max-width: 700px) {
   .topbar .logo {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   .menu {
-    font-size: 1.1rem;
-    gap: 12px;
+    font-size: 0.9rem;
+    gap: 4px;
     flex-wrap: wrap;
   }
 
   .signout-btn {
-    padding: 10px 16px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
   }
 }

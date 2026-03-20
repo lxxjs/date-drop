@@ -31,8 +31,8 @@ function showCodeInput() {
   codeInput.type = 'text';
   codeInput.id = 'codeInput';
   codeInput.className = 'email-input';
-  codeInput.placeholder = 'Enter 6-digit code';
-  codeInput.maxLength = 6;
+  codeInput.placeholder = 'Enter 8-digit code';
+  codeInput.maxLength = 8;
   codeInput.inputMode = 'numeric';
   codeInput.autocomplete = 'one-time-code';
   form.insertBefore(codeInput, sendCodeBtn);
@@ -40,12 +40,12 @@ function showCodeInput() {
   emailInput.readOnly = true;
   emailInput.style.opacity = '0.6';
   sendCodeBtn.textContent = 'Verify';
-  if (hint) hint.textContent = 'Check your email for the 6-digit verification code.';
+  if (hint) hint.textContent = 'Check your email for the 8-digit verification code.';
 
   codeInput.focus();
 
   codeInput.addEventListener('input', () => {
-    const valid = codeInput.value.trim().length === 6;
+    const valid = codeInput.value.trim().length === 8;
     setButtonState(sendCodeBtn, valid);
   });
 
@@ -142,7 +142,7 @@ sendCodeBtn.addEventListener('click', async () => {
   if (verificationMode) {
     const codeInput = document.getElementById('codeInput');
     const code = codeInput ? codeInput.value.trim() : '';
-    if (code.length !== 6) return;
+    if (code.length !== 8) return;
     await handleVerifyCode(email, code);
   } else {
     const domains = await getAllowedDomains();

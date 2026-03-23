@@ -1,8 +1,14 @@
+import hmac
+import logging
+
 from flask import Blueprint, g, jsonify, request
 
 from app.auth import require_auth
 from app.config import Config
+from app.notifications import send_match_email
 from app.supabase_client import get_supabase
+
+logger = logging.getLogger(__name__)
 
 matches = Blueprint("matches", __name__)
 
@@ -128,7 +134,7 @@ def respond_to_match(match_id):
 @matches.post("/api/admin/generate-matches")
 def generate_matches_admin():
     admin_key = request.headers.get("X-Admin-Key", "")
-    if not Config.ADMIN_SECRET or admin_key != Config.ADMIN_SECRET:
+    if not Config.ADMIN_SECRET or not hmac.compare_digest(admin_key, Config.ADMIN_SECRET):
         return jsonify({"ok": False, "message": "Unauthorized."}), 403
 
     payload = request.get_json(silent=True) or {}
@@ -139,4 +145,92 @@ def generate_matches_admin():
     from app.matching import generate_weekly_matches
 
     results = generate_weekly_matches(match_round)
-    return jsonify({"ok": True, "matches_created": len(results)})
+
+    # Send email notifications to matched users (fire-and-forget)
+    emails_sent = 0
+    sb = get_supabase()
+    for match in results:
+        for user_field in ("user_a_id", "user_b_id"):
+            profile_id = match.get(user_field)
+            if not profile_id:
+                continue
+            profile = (
+                sb.table("profiles")
+                .select("email")
+                .eq("id", profile_id)
+                .maybe_single()
+                .execute()
+            )
+            if profile.data and profile.data.get("email"):
+                if send_match_email(profile.data["email"]):
+                    emails_sent += 1
+
+    return jsonify({
+        "ok": True,
+        "matches_created": len(results),
+        "emails_sent": emails_sent,
+    })
+
+
+@matches.get("/api/admin/stats")
+def admin_stats():
+    admin_key = request.headers.get("X-Admin-Key", "")
+    if not Config.ADMIN_SECRET or not hmac.compare_digest(admin_key, Config.ADMIN_SECRET):
+        return jsonify({"ok": False, "message": "Unauthorized."}), 403
+
+    sb = get_supabase()
+
+    # Signup count
+    profiles_result = sb.table("profiles").select("id", count="exact").execute()
+    signup_count = profiles_result.count or 0
+
+    # Invite stats
+    invites_total = sb.table("invites").select("id", count="exact").execute()
+    invites_used = (
+        sb.table("invites")
+        .select("id", count="exact")
+        .not_.is_("used_by", "null")
+        .execute()
+    )
+    total_invites = invites_total.count or 0
+    used_invites = invites_used.count or 0
+    invite_conversion = round(used_invites / total_invites * 100, 1) if total_invites > 0 else 0
+
+    # Match stats
+    matches_result = sb.table("matches").select("id", count="exact").execute()
+    matches_accepted = (
+        sb.table("matches")
+        .select("id", count="exact")
+        .eq("status", "accepted")
+        .execute()
+    )
+    total_matches = matches_result.count or 0
+    accepted_matches = matches_accepted.count or 0
+
+    # Messages (proxy for chat initiation)
+    messages_result = sb.table("messages").select("match_id").execute()
+    chat_matches = len(set(m["match_id"] for m in messages_result.data)) if messages_result.data else 0
+    chat_initiation_rate = round(chat_matches / total_matches * 100, 1) if total_matches > 0 else 0
+
+    # Quick match vs full profile
+    quick_match_count = (
+        sb.table("profiles")
+        .select("id", count="exact")
+        .eq("is_quick_match", True)
+        .execute()
+    )
+
+    return jsonify({
+        "ok": True,
+        "stats": {
+            "signup_count": signup_count,
+            "total_invites": total_invites,
+            "used_invites": used_invites,
+            "invite_conversion_pct": invite_conversion,
+            "total_matches": total_matches,
+            "accepted_matches": accepted_matches,
+            "chat_initiation_rate_pct": chat_initiation_rate,
+            "quick_match_profiles": quick_match_count.count or 0,
+            "full_profiles": signup_count - (quick_match_count.count or 0),
+        },
+    })

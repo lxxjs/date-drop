@@ -1,9 +1,18 @@
+import logging
 import uuid
 
 from flask import Blueprint, g, jsonify, request
 
 from app.auth import require_auth
 from app.supabase_client import get_supabase
+
+logger = logging.getLogger(__name__)
+
+# The 6 quick-match dimensions (subset of the 16 full dimensions)
+QUICK_MATCH_DIMENSIONS = [
+    "s_social_energy", "s_ambition", "s_monogamy",
+    "s_shared_values", "s_spontaneity", "s_humor",
+]
 
 profiles = Blueprint("profiles", __name__)
 
@@ -72,6 +81,18 @@ def _map_answers_to_row(answers: dict) -> dict:
     }
 
 
+def _log_analytics(sb, user_id: str, event_type: str, metadata: dict) -> None:
+    """Fire-and-forget analytics event logging."""
+    try:
+        sb.table("analytics_events").insert({
+            "user_id": user_id,
+            "event_type": event_type,
+            "metadata_json": metadata,
+        }).execute()
+    except Exception:
+        logger.exception("Failed to log analytics event %s for %s", event_type, user_id)
+
+
 @profiles.get("/api/allowed-schools")
 def get_allowed_schools():
     sb = get_supabase()
@@ -100,6 +121,7 @@ def get_profile_status():
 def save_profile():
     payload = request.get_json(silent=True) or {}
     answers = payload.get("answers")
+    quick_match = payload.get("quick_match", False)
 
     if not isinstance(answers, dict) or not answers:
         return jsonify({"ok": False, "message": "No questionnaire answers received."}), 400
@@ -108,9 +130,15 @@ def save_profile():
     email = g.user["email"]
     user_id = g.user["id"]
 
+    # Log questionnaire_started event (fire-and-forget)
+    _log_analytics(sb, user_id, "questionnaire_started", {
+        "mode": "quick" if quick_match else "full",
+    })
+
     row = _map_answers_to_row(answers)
     row["user_id"] = user_id
     row["email"] = email
+    row["is_quick_match"] = quick_match
 
     # Look up school_id from email domain
     for school in sb.table("allowed_schools").select("id, domain").execute().data:
@@ -118,11 +146,20 @@ def save_profile():
             row["school_id"] = school["id"]
             break
 
-    result = (
-        sb.table("profiles")
-        .upsert(row, on_conflict="user_id")
-        .execute()
-    )
+    sb.table("profiles").upsert(row, on_conflict="user_id").execute()
+
+    # Log questionnaire_completed event (fire-and-forget)
+    completed_dimensions = [
+        dim for dim in QUICK_MATCH_DIMENSIONS
+        if row.get(dim) is not None
+    ] if quick_match else [
+        k for k in row if k.startswith("s_") and row[k] is not None
+    ]
+    _log_analytics(sb, user_id, "questionnaire_completed", {
+        "mode": "quick" if quick_match else "full",
+        "dimensions_completed": len(completed_dimensions),
+        "last_dimension": completed_dimensions[-1] if completed_dimensions else None,
+    })
 
     return jsonify({"ok": True, "email": email})
 

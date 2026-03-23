@@ -117,6 +117,7 @@ def get_profile_status():
 
 
 @profiles.post("/api/profile")
+@require_auth
 def save_profile():
     payload = request.get_json(silent=True) or {}
     answers = payload.get("answers")
@@ -126,31 +127,8 @@ def save_profile():
         return jsonify({"ok": False, "message": "No questionnaire answers received."}), 400
 
     sb = get_supabase()
-
-    # Use auth if available, otherwise fall back to dev defaults
-    if hasattr(g, "user") and g.user:
-        email = g.user["email"]
-        user_id = g.user["id"]
-    else:
-        # Try to extract from token silently (don't reject if missing)
-        token = request.cookies.get("sb_access_token")
-        if not token:
-            auth_header = request.headers.get("Authorization", "")
-            if auth_header.startswith("Bearer "):
-                token = auth_header[7:]
-        if token:
-            try:
-                import jwt as pyjwt
-                from app.config import Config
-                decoded = pyjwt.decode(token, Config.SUPABASE_JWT_SECRET, algorithms=["HS256"], audience="authenticated")
-                email = decoded.get("email", "")
-                user_id = decoded.get("sub")
-            except Exception:
-                email = answers.get("fullName", "dev") + "@dev.local"
-                user_id = "dev-" + email
-        else:
-            email = answers.get("fullName", "dev").replace(" ", "").lower() + "@dev.local"
-            user_id = "dev-" + email
+    email = g.user["email"]
+    user_id = g.user["id"]
 
     # Log questionnaire_started event (fire-and-forget)
     _log_analytics(sb, user_id, "questionnaire_started", {

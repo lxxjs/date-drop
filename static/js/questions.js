@@ -35,7 +35,7 @@ const SCALE_GROUP_THREE = [
 
 /* ── helpers ────────────────────────────────────────────────── */
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 5;
 
 function buildChipGrid(containerId, maxSelect) {
   const container = document.getElementById(containerId);
@@ -79,10 +79,10 @@ function buildScaleGroup(containerId, questions) {
 
 let quickMatchMode = false;
 
-// Full mode: steps 1-6. Quick mode: steps 1, 2, 3, 6 (skip 4 & 5).
+// Full mode: steps 1-5. Quick mode: steps 1, 2, 3 (skip 4 & 5).
 // Step 3 has the 6 quick-match dimensions (SCALE_GROUP_ONE).
-const FULL_STEPS = [1, 2, 3, 4, 5, 6];
-const QUICK_STEPS = [1, 2, 3, 6];
+const FULL_STEPS = [1, 2, 3, 4, 5];
+const QUICK_STEPS = [1, 2, 3];
 let activeSteps = FULL_STEPS;
 
 function getStepSequence() {

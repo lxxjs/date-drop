@@ -15,14 +15,19 @@ const sb = supabase.createClient(
  */
 async function syncSession(session) {
   if (!session) return;
-  await fetch('/api/auth/session', {
+  const res = await fetch('/api/auth/session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
     body: JSON.stringify({
       access_token: session.access_token,
       refresh_token: session.refresh_token,
     }),
   });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    console.error('Session sync failed:', res.status, body);
+  }
 }
 
 /**

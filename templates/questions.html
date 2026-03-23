@@ -50,7 +50,7 @@
 
     <section class="progress-panel">
       <div class="progress-meta">
-        <span id="progressLabel">Step 1 of 6</span>
+        <span id="progressLabel">Step 1 of 5</span>
         <span id="progressPercent">17%</span>
       </div>
       <div class="progress-track">
@@ -264,36 +264,10 @@
         </div>
       </section>
 
-      <section class="step" data-step="6">
-        <div class="step-heading">
-          <p class="step-kicker">Logistics</p>
-          <h2>Phone confirmation and finish</h2>
-          <p>The original flow ends with a QR-based phone confirmation. For now, this page keeps the structure but finishes locally.</p>
-        </div>
-
-        <div class="logistics-card">
-          <div class="qr-placeholder">
-            <div class="qr-grid"></div>
-          </div>
-          <div class="logistics-copy">
-            <h3>Verify your phone</h3>
-            <p>Send us a quick text to verify your number and save our contact. We'll add the real QR / SMS step later.</p>
-            <label class="field">
-              <span>Phone number</span>
-              <input type="tel" name="phoneNumber" placeholder="+86 138 0000 0000" />
-            </label>
-            <label class="field">
-              <span>Anything else you'd like your match to know?</span>
-              <textarea name="finalNotes" rows="4" placeholder="Optional notes, dealbreakers, or fun facts"></textarea>
-            </label>
-          </div>
-        </div>
-
-        <div class="complete-panel" id="completePanel" hidden>
-          <h3>Profile complete</h3>
-          <p>Your answers are being saved. You will be redirected to your home page.</p>
-        </div>
-      </section>
+      <div class="complete-panel" id="completePanel" hidden>
+        <h3>Profile complete</h3>
+        <p>Your answers are being saved. You will be redirected to your home page.</p>
+      </div>
 
       <div class="form-actions">
         <button type="button" id="prevBtn" class="btn-ghost">Back</button>

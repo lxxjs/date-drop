@@ -102,10 +102,10 @@ async function handleVerifyCode(email, code) {
     if (result.ok && result.has_profile) {
       window.location.href = '/home';
     } else {
-      window.location.href = `/questions?email=${encodeURIComponent(email)}`;
+      window.location.href = '/questions';
     }
   } catch {
-    window.location.href = `/questions?email=${encodeURIComponent(email)}`;
+    window.location.href = '/questions';
   }
 }
 

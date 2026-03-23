@@ -1,4 +1,4 @@
-/* global sb, syncSession */
+/* global sb, syncSession, escapeHtml */
 
 const matchId = window.__MATCH_ID__;
 const chatMessages = document.getElementById('chatMessages');
@@ -70,12 +70,6 @@ function appendMessage(msg) {
   chatMessages.appendChild(bubble);
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
 function scrollToBottom() {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
@@ -87,19 +81,22 @@ chatForm.addEventListener('submit', async (e) => {
   const content = chatInput.value.trim();
   if (!content) return;
 
-  chatInput.value = '';
   const sendBtn = chatForm.querySelector('.chat-send-btn');
   sendBtn.disabled = true;
+  chatInput.value = '';
 
   try {
-    await fetch('/api/messages', {
+    const res = await fetch('/api/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
       body: JSON.stringify({ match_id: matchId, content }),
     });
+    if (!res.ok) {
+      chatInput.value = content;
+    }
   } catch {
-    // Message will appear via realtime if it succeeded server-side
+    chatInput.value = content;
   }
 
   sendBtn.disabled = false;

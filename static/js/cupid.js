@@ -1,4 +1,4 @@
-/* global sb, syncSession */
+/* global sb, syncSession, escapeHtml */
 
 const cupidForm = document.getElementById('cupidForm');
 const shipBtn = document.getElementById('shipBtn');
@@ -125,7 +125,7 @@ async function loadLeaderboard() {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${i + 1}</td>
-        <td>${entry.initials}</td>
+        <td>${escapeHtml(entry.initials)}</td>
         <td>${entry.points}</td>
       `;
       tbody.appendChild(tr);

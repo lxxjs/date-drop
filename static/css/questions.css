@@ -52,6 +52,49 @@ body {
   padding: 0 24px 48px;
 }
 
+/* ── Quick match toggle ── */
+.match-mode-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.match-mode-label {
+  cursor: pointer;
+}
+
+.match-mode-label input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.match-mode-card {
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border-strong);
+  background: white;
+  text-align: center;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.match-mode-card strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.match-mode-card span {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.match-mode-label input:checked + .match-mode-card {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
 .progress-panel {
   margin-bottom: 20px;
 }

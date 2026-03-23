@@ -30,8 +30,21 @@
   </header>
 
   <main class="home-shell">
+    <!-- Inviter reveal banner (shown if user signed up via invite) -->
+    <section id="inviterBanner" class="inviter-banner" hidden>
+      <p><span id="inviterName"></span> invited you to Date Drop!</p>
+    </section>
+
     <section class="matches-hero">
       <h1>Matches</h1>
+    </section>
+
+    <!-- Invite links section -->
+    <section class="invite-section">
+      <h2>Invite friends</h2>
+      <p class="invite-section-sub">Share Date Drop with friends. You have <strong><span id="invitesRemaining">5</span></strong> invites left.</p>
+      <button class="btn-primary" id="createInviteBtn">Create invite link</button>
+      <div id="inviteList" class="invite-list"></div>
     </section>
 
     <!-- Matches or empty state rendered by home.js -->

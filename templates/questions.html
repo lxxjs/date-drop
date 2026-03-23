@@ -26,6 +26,28 @@
   </header>
 
   <main class="questionnaire-shell">
+    <!-- Quick match toggle -->
+    <section class="match-mode-toggle">
+      <div class="match-mode-option">
+        <label class="match-mode-label">
+          <input type="radio" name="matchMode" value="quick" id="modeQuick" />
+          <div class="match-mode-card">
+            <strong>Get matched fast</strong>
+            <span>~2 min &middot; 6 key questions</span>
+          </div>
+        </label>
+      </div>
+      <div class="match-mode-option">
+        <label class="match-mode-label">
+          <input type="radio" name="matchMode" value="full" id="modeFull" checked />
+          <div class="match-mode-card">
+            <strong>Complete profile</strong>
+            <span>~5 min &middot; better matches</span>
+          </div>
+        </label>
+      </div>
+    </section>
+
     <section class="progress-panel">
       <div class="progress-meta">
         <span id="progressLabel">Step 1 of 6</span>

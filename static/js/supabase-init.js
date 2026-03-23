@@ -46,3 +46,12 @@ function isAllowedSchoolEmail(email, domains) {
   const normalized = email.trim().toLowerCase();
   return domains.some((domain) => normalized.endsWith(domain));
 }
+
+/**
+ * Escape HTML to prevent XSS when inserting user-controlled text into innerHTML.
+ */
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}

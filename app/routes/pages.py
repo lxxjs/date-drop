@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, render_template, request
 
+from app.auth import decode_supabase_jwt
 from app.config import Config
 
 pages = Blueprint("pages", __name__)
@@ -7,6 +8,15 @@ pages = Blueprint("pages", __name__)
 
 @pages.get("/")
 def index():
+    # If user still has a valid session cookie, skip OTP and go to /home
+    token = request.cookies.get("sb_access_token")
+    if token:
+        try:
+            decode_supabase_jwt(token)
+            return redirect("/home")
+        except Exception:
+            pass
+
     return render_template(
         "index.html",
         supabase_url=Config.SUPABASE_URL,

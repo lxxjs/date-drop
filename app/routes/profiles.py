@@ -107,12 +107,13 @@ def get_profile_status():
     email = g.user["email"]
     result = (
         sb.table("profiles")
-        .select("id")
+        .select("id, is_opted_in")
         .eq("user_id", g.user["id"])
         .execute()
     )
     has_profile = bool(result.data)
-    return jsonify({"ok": True, "email": email, "has_profile": has_profile})
+    is_opted_in = result.data[0]["is_opted_in"] if has_profile else False
+    return jsonify({"ok": True, "email": email, "has_profile": has_profile, "is_opted_in": is_opted_in})
 
 
 @profiles.post("/api/profile")

@@ -23,7 +23,15 @@ document.getElementById('signOutBtn').addEventListener('click', async () => {
   // Redeem invite if pending (user just completed questionnaire)
   await redeemPendingInvite();
 
-  loadMatches();
+  // Check opt-in status before loading matches
+  let isOptedIn = false;
+  try {
+    const statusRes = await fetch('/api/profile-status', { credentials: 'same-origin' });
+    const statusData = await statusRes.json();
+    if (statusData.ok) isOptedIn = statusData.is_opted_in;
+  } catch { /* ignore */ }
+
+  loadMatches(isOptedIn);
   loadInvites();
 })();
 
@@ -139,26 +147,28 @@ document.getElementById('createInviteBtn').addEventListener('click', async () =>
 
 // ── Load & render matches ────────────────────────────────────
 
-async function loadMatches() {
+async function loadMatches(isOptedIn) {
   try {
     const res = await fetch('/api/matches', { credentials: 'same-origin' });
     const data = await res.json();
 
     if (!data.ok || !data.matches || data.matches.length === 0) {
-      showEmptyState();
+      showEmptyState(isOptedIn);
       return;
     }
 
-    renderMatches(data.matches);
+    renderMatches(data.matches, isOptedIn);
   } catch {
-    showEmptyState();
+    showEmptyState(isOptedIn);
   }
 }
 
-function showEmptyState() {
+function showEmptyState(isOptedIn) {
   const hero = matchesContainer.querySelector('.matches-hero');
   const existing = matchesContainer.querySelector('.empty-state-card');
   if (existing) return; // already showing
+
+  const btnText = isOptedIn ? "You're in! We'll match you soon." : 'Opt in for this week';
 
   const section = document.createElement('section');
   section.className = 'empty-state-card';
@@ -166,28 +176,30 @@ function showEmptyState() {
     <div class="polaroid"><div class="polaroid-photo"></div></div>
     <h2>No matches yet</h2>
     <p>Your match history will show up here</p>
-    <button class="btn-primary" id="optInBtn" style="margin-top:1rem">Opt in for this week</button>
+    <button class="btn-primary" id="optInBtn" style="margin-top:1rem"${isOptedIn ? ' disabled' : ''}>${btnText}</button>
   `;
   hero.insertAdjacentElement('afterend', section);
 
-  document.getElementById('optInBtn').addEventListener('click', async () => {
-    const btn = document.getElementById('optInBtn');
-    btn.disabled = true;
-    btn.textContent = 'Opting in...';
-    try {
-      const res = await fetch('/api/profile/opt-in', {
-        method: 'POST',
-        credentials: 'same-origin',
-      });
-      const result = await res.json();
-      btn.textContent = result.ok ? "You're in! We'll match you soon." : (result.message || 'Error');
-    } catch {
-      btn.textContent = 'Network error';
-    }
-  });
+  if (!isOptedIn) {
+    document.getElementById('optInBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('optInBtn');
+      btn.disabled = true;
+      btn.textContent = 'Opting in...';
+      try {
+        const res = await fetch('/api/profile/opt-in', {
+          method: 'POST',
+          credentials: 'same-origin',
+        });
+        const result = await res.json();
+        btn.textContent = result.ok ? "You're in! We'll match you soon." : (result.message || 'Error');
+      } catch {
+        btn.textContent = 'Network error';
+      }
+    });
+  }
 }
 
-function renderMatches(matches) {
+function renderMatches(matches, isOptedIn) {
   // Remove empty state if present
   const empty = matchesContainer.querySelector('.empty-state-card');
   if (empty) empty.remove();
@@ -199,20 +211,27 @@ function renderMatches(matches) {
     const optBtn = document.createElement('button');
     optBtn.className = 'btn-primary';
     optBtn.id = 'optInBtn';
-    optBtn.textContent = 'Opt in for next week';
     optBtn.style.marginTop = '1rem';
-    hero.appendChild(optBtn);
-    optBtn.addEventListener('click', async () => {
+
+    if (isOptedIn) {
+      optBtn.textContent = "You're in for this week!";
       optBtn.disabled = true;
-      optBtn.textContent = 'Opting in...';
-      try {
-        const res = await fetch('/api/profile/opt-in', { method: 'POST', credentials: 'same-origin' });
-        const result = await res.json();
-        optBtn.textContent = result.ok ? "You're in!" : (result.message || 'Error');
-      } catch {
-        optBtn.textContent = 'Network error';
-      }
-    });
+    } else {
+      optBtn.textContent = 'Opt in for next week';
+      optBtn.addEventListener('click', async () => {
+        optBtn.disabled = true;
+        optBtn.textContent = 'Opting in...';
+        try {
+          const res = await fetch('/api/profile/opt-in', { method: 'POST', credentials: 'same-origin' });
+          const result = await res.json();
+          optBtn.textContent = result.ok ? "You're in!" : (result.message || 'Error');
+        } catch {
+          optBtn.textContent = 'Network error';
+        }
+      });
+    }
+
+    hero.appendChild(optBtn);
   }
 
   const grid = document.createElement('section');

@@ -1,6 +1,7 @@
 import logging
 
 from flask import Flask, jsonify
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.config import Config
 
@@ -55,5 +56,8 @@ def create_app() -> Flask:
     def internal_error(e):
         logger.exception("Internal server error")
         return jsonify({"ok": False, "message": "Internal server error."}), 500
+
+    # Trust Railway's reverse proxy headers (X-Forwarded-For, -Proto, -Host)
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     return app

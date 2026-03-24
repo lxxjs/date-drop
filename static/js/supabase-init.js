@@ -14,19 +14,26 @@ const sb = supabase.createClient(
  * so it can set secure httpOnly cookies for server-side auth.
  */
 async function syncSession(session) {
-  if (!session) return;
-  const res = await fetch('/api/auth/session', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'same-origin',
-    body: JSON.stringify({
-      access_token: session.access_token,
-      refresh_token: session.refresh_token,
-    }),
-  });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    console.error('Session sync failed:', res.status, body);
+  if (!session) return false;
+  try {
+    const res = await fetch('/api/auth/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      }),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      console.error('Session sync failed:', res.status, body);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('Session sync error:', err);
+    return false;
   }
 }
 

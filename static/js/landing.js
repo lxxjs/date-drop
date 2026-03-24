@@ -91,7 +91,12 @@ async function handleVerifyCode(email, code) {
   }
 
   // Sync session to Flask backend (sets httpOnly cookie)
-  await syncSession(data.session);
+  const synced = await syncSession(data.session);
+  if (!synced) {
+    setStatus('Failed to establish session. Please try again.', 'error');
+    setButtonState(sendCodeBtn, true);
+    return;
+  }
 
   // Check if the user already has a profile
   setStatus('Signed in! Checking profile...');

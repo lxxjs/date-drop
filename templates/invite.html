@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Date Drop | You've been invited</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/invite.css') }}" />
+</head>
+<body>
+
+  <section class="invite-hero">
+    <div class="invite-overlay"></div>
+
+    <nav class="nav">
+      <a href="/" class="logo logo--dark">
+        <svg class="logo-icon" viewBox="0 0 24 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 7.5 12 18 12 18S24 19.5 24 12C24 5.373 18.627 0 12 0zm0 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
+        </svg>
+        <span>date drop.</span>
+      </a>
+    </nav>
+
+    <div class="invite-content" id="inviteContent">
+      <!-- Loading state -->
+      <div id="loadingState">
+        <h1 class="invite-headline">Loading...</h1>
+      </div>
+
+      <!-- Valid invite state -->
+      <div id="validState" hidden>
+        <p class="invite-eyebrow">You've been invited</p>
+        <h1 class="invite-headline">Someone at <span id="schoolName">your university</span> thinks you should try Date Drop.</h1>
+        <p class="invite-social-proof" id="socialProof"></p>
+        <p class="invite-sub">Sign up to find out who invited you.</p>
+
+        <div class="invite-form" id="authForm">
+          <input
+            type="email"
+            id="emailInput"
+            class="email-input"
+            placeholder="you@stu.pku.edu.cn"
+            required
+          />
+          <button id="sendCodeBtn" class="btn-start" disabled>Sign up</button>
+          <p class="form-hint">Use your campus email to get started.</p>
+          <p id="statusMessage" class="status-message" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <!-- Error state (expired / invalid / already used) -->
+      <div id="errorState" hidden>
+        <h1 class="invite-headline" id="errorHeadline">Invite not found</h1>
+        <p class="invite-sub" id="errorMessage">This invite link is no longer valid.</p>
+        <a href="/" class="btn-start" style="display:inline-block;margin-top:1.5rem">Go to Date Drop</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    window.__SUPABASE_URL__ = {{ supabase_url | tojson }};
+    window.__SUPABASE_ANON_KEY__ = {{ supabase_anon_key | tojson }};
+    window.__INVITE_CODE__ = {{ invite_code | tojson }};
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="{{ url_for('static', filename='js/supabase-init.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/invite.js') }}"></script>
+</body>
+</html>

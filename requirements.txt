@@ -3,3 +3,5 @@ gunicorn==23.*
 supabase==2.*
 python-dotenv==1.*
 PyJWT==2.*
+resend==2.*
+pytest==8.*

@@ -91,7 +91,12 @@ async function handleVerifyCode(email, code) {
   }
 
   // Sync session to Flask backend (sets httpOnly cookie)
-  await syncSession(data.session);
+  const synced = await syncSession(data.session);
+  if (!synced) {
+    setStatus('Failed to establish session. Please try again.', 'error');
+    setButtonState(sendCodeBtn, true);
+    return;
+  }
 
   // Check if the user already has a profile
   setStatus('Signed in! Checking profile...');
@@ -102,10 +107,10 @@ async function handleVerifyCode(email, code) {
     if (result.ok && result.has_profile) {
       window.location.href = '/home';
     } else {
-      window.location.href = `/questions?email=${encodeURIComponent(email)}`;
+      window.location.href = '/questions';
     }
   } catch {
-    window.location.href = `/questions?email=${encodeURIComponent(email)}`;
+    window.location.href = '/questions';
   }
 }
 

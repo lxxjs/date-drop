@@ -30,7 +30,12 @@ class Config:
     SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET", "")
 
     ADMIN_SECRET = os.getenv("ADMIN_SECRET", "")
+    RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+    APP_URL = os.getenv("APP_URL", "http://localhost:8765")
 
-    SESSION_COOKIE_SECURE = os.getenv("FLASK_ENV") == "production"
+    SESSION_COOKIE_SECURE = (
+        os.getenv("FLASK_ENV") == "production"
+        or bool(os.getenv("RAILWAY_ENVIRONMENT"))
+    )
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"

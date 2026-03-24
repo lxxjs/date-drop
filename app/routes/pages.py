@@ -49,3 +49,13 @@ def chat(match_id):
         supabase_url=Config.SUPABASE_URL,
         supabase_anon_key=Config.SUPABASE_ANON_KEY,
     )
+
+
+@pages.get("/invite/<code>")
+def invite_landing(code):
+    return render_template(
+        "invite.html",
+        invite_code=code,
+        supabase_url=Config.SUPABASE_URL,
+        supabase_anon_key=Config.SUPABASE_ANON_KEY,
+    )

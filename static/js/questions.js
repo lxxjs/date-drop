@@ -1,3 +1,4 @@
+/* global escapeHtml */
 /* ── data ───────────────────────────────────────────────────── */
 
 const TRAITS = [
@@ -34,7 +35,7 @@ const SCALE_GROUP_THREE = [
 
 /* ── helpers ────────────────────────────────────────────────── */
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 5;
 
 function buildChipGrid(containerId, maxSelect) {
   const container = document.getElementById(containerId);
@@ -74,6 +75,53 @@ function buildScaleGroup(containerId, questions) {
   });
 }
 
+/* ── quick match mode ──────────────────────────────────────── */
+
+let quickMatchMode = false;
+
+// Full mode: steps 1-5. Quick mode: steps 1, 2, 3 (skip 4 & 5).
+// Step 3 has the 6 quick-match dimensions (SCALE_GROUP_ONE).
+const FULL_STEPS = [1, 2, 3, 4, 5];
+const QUICK_STEPS = [1, 2, 3];
+let activeSteps = FULL_STEPS;
+
+function getStepSequence() {
+  return quickMatchMode ? QUICK_STEPS : FULL_STEPS;
+}
+
+function getTotalSteps() {
+  return getStepSequence().length;
+}
+
+function getStepIndex(stepNumber) {
+  return getStepSequence().indexOf(stepNumber);
+}
+
+const modeQuick = document.getElementById('modeQuick');
+const modeFull = document.getElementById('modeFull');
+
+if (modeQuick && modeFull) {
+  modeQuick.addEventListener('change', () => {
+    if (modeQuick.checked) {
+      quickMatchMode = true;
+      activeSteps = QUICK_STEPS;
+      // Reset to step 1 if currently on a skipped step
+      if (getStepIndex(currentStep) === -1) {
+        currentStep = 1;
+      }
+      showStep(currentStep);
+    }
+  });
+
+  modeFull.addEventListener('change', () => {
+    if (modeFull.checked) {
+      quickMatchMode = false;
+      activeSteps = FULL_STEPS;
+      showStep(currentStep);
+    }
+  });
+}
+
 /* ── state ──────────────────────────────────────────────────── */
 
 let currentStep = 1;
@@ -98,16 +146,22 @@ function showStep(n) {
   const target = document.querySelector(`.step[data-step="${n}"]`);
   if (target) target.classList.add('is-active');
 
-  const pct = Math.round((n / TOTAL_STEPS) * 100);
-  document.getElementById('progressLabel').textContent = `Step ${n} of ${TOTAL_STEPS}`;
+  const idx = getStepIndex(n);
+  const total = getTotalSteps();
+  const pct = Math.round(((idx + 1) / total) * 100);
+  document.getElementById('progressLabel').textContent = `Step ${idx + 1} of ${total}`;
   document.getElementById('progressPercent').textContent = `${pct}%`;
   document.getElementById('progressFill').style.width = `${pct}%`;
 
-  document.getElementById('prevBtn').style.visibility = n === 1 ? 'hidden' : 'visible';
+  document.getElementById('prevBtn').style.visibility = idx === 0 ? 'hidden' : 'visible';
 
-  const isLast = n === TOTAL_STEPS;
+  const isLast = idx === total - 1;
   document.getElementById('nextBtn').hidden = isLast;
   document.getElementById('submitBtn').hidden = !isLast;
+
+  // Hide the mode toggle once past step 1
+  const toggle = document.querySelector('.match-mode-toggle');
+  if (toggle) toggle.style.display = n > 1 ? 'none' : '';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -120,9 +174,16 @@ buildScaleGroup('scaleGroupOne', SCALE_GROUP_ONE);
 buildScaleGroup('scaleGroupTwo', SCALE_GROUP_TWO);
 buildScaleGroup('scaleGroupThree', SCALE_GROUP_THREE);
 
-const emailParam = new URLSearchParams(window.location.search).get('email');
 const badge = document.getElementById('emailBadge');
-if (emailParam && badge) badge.textContent = emailParam;
+(async () => {
+  try {
+    const res = await fetch('/api/profile-status', { credentials: 'same-origin' });
+    const data = await res.json();
+    if (data.ok && badge) badge.textContent = data.email;
+  } catch {
+    // badge stays empty if session is unavailable
+  }
+})();
 
 showStep(1);
 
@@ -133,15 +194,19 @@ document.getElementById('nextBtn').addEventListener('click', () => {
     return;
   }
 
-  if (currentStep < TOTAL_STEPS) {
-    currentStep += 1;
+  const steps = getStepSequence();
+  const idx = getStepIndex(currentStep);
+  if (idx < steps.length - 1) {
+    currentStep = steps[idx + 1];
     showStep(currentStep);
   }
 });
 
 document.getElementById('prevBtn').addEventListener('click', () => {
-  if (currentStep > 1) {
-    currentStep -= 1;
+  const steps = getStepSequence();
+  const idx = getStepIndex(currentStep);
+  if (idx > 0) {
+    currentStep = steps[idx - 1];
     showStep(currentStep);
   }
 });
@@ -189,7 +254,7 @@ function collectFormAnswers(formElement) {
 function showCompletePanel(message, isError = false) {
   const panel = document.getElementById('completePanel');
   panel.hidden = false;
-  panel.innerHTML = `<h3>${isError ? 'Could not save profile' : 'Profile complete'}</h3><p>${message}</p>`;
+  panel.innerHTML = `<h3>${isError ? 'Could not save profile' : 'Profile complete'}</h3><p>${escapeHtml(message)}</p>`;
 }
 
 document.getElementById('questionnaireForm').addEventListener('submit', async (e) => {
@@ -217,8 +282,8 @@ document.getElementById('questionnaireForm').addEventListener('submit', async (e
         body: photoData,
       });
       const photoResult = await photoRes.json();
-      if (photoRes.ok && photoResult.ok) {
-        answers.photoUrl = photoResult.photo_url;
+      if (!photoRes.ok || !photoResult.ok) {
+        throw new Error(photoResult.message || 'Photo upload failed.');
       }
     }
 
@@ -226,7 +291,7 @@ document.getElementById('questionnaireForm').addEventListener('submit', async (e
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
-      body: JSON.stringify({ answers }),
+      body: JSON.stringify({ answers, quick_match: quickMatchMode }),
     });
 
     const result = await response.json();

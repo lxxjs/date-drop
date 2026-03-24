@@ -1,97 +1,78 @@
 # Date Drop
 
-A lightweight Flask web app for a campus dating flow:
-
-- Landing page with campus email entry
-- Multi-step profile questionnaire
-- Profile saved to SQLite
-- Home (Matches) page
-- Cupid page UI with mock shipping interaction
+A campus dating app for Chinese universities. Users verify via school email (Supabase OTP), fill out a questionnaire, get matched weekly, and can chat with matches. Includes a "Cupid" feature for friend-pair nominations and a viral invite system.
 
 ## Tech Stack
 
-- Python 3
-- Flask
-- SQLite (via Python `sqlite3`)
-- HTML/CSS/Vanilla JavaScript
-
-## Project Structure
-
-```
-date-drop/
-├── app.py                      # Flask app, routes, and API
-├── requirements.txt
-├── .env.example
-├── templates/
-│   ├── index.html              # Landing page
-│   ├── questions.html          # Onboarding questionnaire
-│   ├── home.html               # Matches home page
-│   └── cupid.html              # Cupid page
-├── static/
-│   ├── css/
-│   │   ├── base.css            # Shared reset, logo, topbar styles
-│   │   ├── landing.css         # Landing page styles
-│   │   ├── questions.css       # Questionnaire styles
-│   │   ├── home.css            # Home page styles
-│   │   └── cupid.css           # Cupid page styles
-│   ├── js/
-│   │   ├── landing.js          # Landing page logic
-│   │   ├── questions.js        # Questionnaire logic
-│   │   └── cupid.js            # Cupid page logic
-│   └── images/
-│       └── questions*.jpg      # Question reference screenshots
-```
+- Python 3 / Flask
+- Supabase (PostgreSQL + Auth + Storage)
+- HTML/CSS/Vanilla JavaScript (Jinja2 templates)
+- Resend (email notifications)
+- Railway (deployment)
 
 ## Local Setup
 
 ```bash
+cd date-drop
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env  # fill in Supabase credentials
 python app.py
 ```
 
 Open: [http://localhost:8765](http://localhost:8765)
 
-If you want another port:
+## Environment Variables
 
-```bash
-PORT=5000 python app.py
-```
+See `.env.example`. Required: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_JWT_SECRET`. Optional: `ADMIN_SECRET`, `RESEND_API_KEY`, `APP_URL`, `PORT`.
 
-## Current Routes
+## Routes
 
 ### Pages
 
-- `GET /` - landing page
-- `GET /questions` - questionnaire
-- `GET /home` - matches home page
-- `GET /cupid` - cupid page
+| Route | Description |
+|-------|-------------|
+| `GET /` | Landing page |
+| `GET /questions` | Profile questionnaire (full or quick match mode) |
+| `GET /home` | Matches home page |
+| `GET /cupid` | Cupid nominations page |
+| `GET /chat/<match_id>` | Chat with a match |
+| `GET /invite/<code>` | Campus invite landing page |
 
 ### APIs
 
-- `POST /api/send-code`
-- `POST /api/verify-code`
-- `GET /api/session`
-- `GET /api/profile-status`
-- `POST /api/profile`
+| Route | Description |
+|-------|-------------|
+| `POST /api/auth/session` | Set auth cookies from Supabase token |
+| `POST /api/auth/logout` | Clear auth cookies |
+| `GET /api/profile-status` | Check if user has a profile |
+| `POST /api/profile` | Save questionnaire answers |
+| `POST /api/profile/photo` | Upload profile photo |
+| `POST /api/profile/opt-in` | Opt in for weekly matching |
+| `GET /api/allowed-schools` | List whitelisted university domains |
+| `GET /api/matches` | List user's matches |
+| `POST /api/matches/<id>/respond` | Accept/decline a match |
+| `GET /api/messages/<match_id>` | Get chat messages |
+| `POST /api/messages` | Send a chat message |
+| `POST /api/cupid/nominate` | Submit a cupid nomination |
+| `GET /api/cupid/leaderboard` | Cupid points leaderboard |
+| `POST /api/invite/create` | Create an invite link (5 max) |
+| `GET /api/invite/<code>` | Get invite metadata |
+| `POST /api/invite/redeem` | Redeem an invite after signup |
+| `GET /api/invite/mine` | List user's invite links |
+| `POST /api/admin/generate-matches` | Trigger weekly matching (admin) |
+| `GET /api/admin/stats` | Dashboard stats (admin) |
 
-## Database
+## Testing
 
-The app creates `date_drop.db` automatically in the project root.
+```bash
+source .venv/bin/activate
+python -m pytest tests/ -v
+```
 
-`profiles` table stores:
+29 tests covering invite CRUD, email notifications, admin stats, and page rendering.
 
-- `email` (unique)
-- `answers_json` (questionnaire payload)
-- `submitted_at` (unix timestamp)
+## Deployment
 
-## Returning User Behavior
-
-- If a user already has a saved profile, they are redirected to `/home`.
-- New users continue to `/questions`.
-
-## Notes
-
-- This is a development build (not production-hardened).
-- Email verification flow exists in API, but front-end currently uses a simplified onboarding path.
+Railway via nixpacks. Config in `railway.toml`. Production command: `gunicorn wsgi:app`.

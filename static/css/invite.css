@@ -1,0 +1,135 @@
+/* ========= INVITE LANDING PAGE ========= */
+body {
+  background: var(--color-bg);
+}
+
+.invite-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #FDE8ED 0%, #FDF0F3 100%);
+  overflow: hidden;
+}
+
+.invite-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.05) 100%);
+}
+
+.invite-content {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px 80px;
+  color: var(--color-text-primary);
+}
+
+.invite-eyebrow {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.invite-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  max-width: 640px;
+}
+
+.invite-social-proof {
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.invite-sub {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 32px;
+}
+
+/* ── Form (mirrors landing page) ── */
+.invite-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.invite-form .email-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background: white;
+  transition: border-color var(--transition-fast);
+  outline: none;
+}
+
+.invite-form .email-input:focus {
+  border-color: var(--color-primary);
+}
+
+.invite-form .btn-start {
+  width: 100%;
+  padding: 16px 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: white;
+  font-size: 1.05rem;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background var(--transition-fast), opacity var(--transition-fast);
+}
+
+.invite-form .btn-start:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.invite-form .btn-start:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.invite-form .form-hint {
+  font-size: 0.85rem;
+  color: var(--color-text-tertiary);
+}
+
+.invite-form .status-message {
+  font-size: 0.9rem;
+  min-height: 1.4em;
+}
+
+.invite-form .status-message.error {
+  color: #D32F2F;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .invite-content {
+    padding: 40px 16px 60px;
+  }
+
+  .invite-headline {
+    font-size: 1.75rem;
+  }
+}

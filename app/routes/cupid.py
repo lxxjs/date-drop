@@ -1,7 +1,7 @@
 from flask import Blueprint, g, jsonify, request
 
 from app.auth import require_auth
-from app.supabase_client import get_supabase
+from app.supabase_client import exec_single, get_supabase
 
 cupid = Blueprint("cupid", __name__)
 
@@ -25,12 +25,10 @@ def nominate():
 
     sb = get_supabase()
 
-    profile = (
+    profile = exec_single(
         sb.table("profiles")
         .select("id")
         .eq("user_id", g.user["id"])
-        .maybe_single()
-        .execute()
     )
     if not profile.data:
         return jsonify({"ok": False, "message": "Complete your profile first."}), 400

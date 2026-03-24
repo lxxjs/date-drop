@@ -1,18 +1,16 @@
 from flask import Blueprint, g, jsonify, request
 
 from app.auth import require_auth
-from app.supabase_client import get_supabase
+from app.supabase_client import exec_single, get_supabase
 
 chat = Blueprint("chat", __name__)
 
 
 def _user_is_in_match(sb, profile_id: str, match_id: str) -> bool:
-    match = (
+    match = exec_single(
         sb.table("matches")
         .select("user_a_id, user_b_id")
         .eq("id", match_id)
-        .maybe_single()
-        .execute()
     )
     if not match.data:
         return False
@@ -24,12 +22,10 @@ def _user_is_in_match(sb, profile_id: str, match_id: str) -> bool:
 def get_messages(match_id):
     sb = get_supabase()
 
-    profile = (
+    profile = exec_single(
         sb.table("profiles")
         .select("id")
         .eq("user_id", g.user["id"])
-        .maybe_single()
-        .execute()
     )
     if not profile.data:
         return jsonify({"ok": False, "message": "Profile not found."}), 404
@@ -73,12 +69,10 @@ def send_message():
 
     sb = get_supabase()
 
-    profile = (
+    profile = exec_single(
         sb.table("profiles")
         .select("id")
         .eq("user_id", g.user["id"])
-        .maybe_single()
-        .execute()
     )
     if not profile.data:
         return jsonify({"ok": False, "message": "Profile not found."}), 404

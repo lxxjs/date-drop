@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 from flask import Blueprint, g, jsonify, request
 
 from app.auth import require_auth
-from app.supabase_client import get_supabase
+from app.supabase_client import exec_single, get_supabase
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +31,10 @@ def create_invite():
     user_id = g.user["id"]
 
     # Look up the user's profile to get their profile id
-    profile = (
+    profile = exec_single(
         sb.table("profiles")
         .select("id, school_id")
         .eq("user_id", user_id)
-        .maybe_single()
-        .execute()
     )
     if not profile.data:
         return jsonify({"ok": False, "message": "Complete your profile first."}), 400
@@ -82,12 +80,10 @@ def get_invite(code):
     """Public endpoint — returns invite metadata for the landing page."""
     sb = get_supabase()
 
-    invite = (
+    invite = exec_single(
         sb.table("invites")
         .select("id, invite_code, used_by, expires_at, inviter_id")
         .eq("invite_code", code)
-        .maybe_single()
-        .execute()
     )
     if not invite.data:
         return jsonify({"ok": False, "message": "Invalid invite link."}), 404
@@ -103,20 +99,16 @@ def get_invite(code):
 
     # Get school name for the landing page (via inviter's profile)
     school_name = "your university"
-    inviter_profile = (
+    inviter_profile = exec_single(
         sb.table("profiles")
         .select("school_id")
         .eq("id", invite.data["inviter_id"])
-        .maybe_single()
-        .execute()
     )
     if inviter_profile.data and inviter_profile.data.get("school_id"):
-        school = (
+        school = exec_single(
             sb.table("allowed_schools")
             .select("name")
             .eq("id", inviter_profile.data["school_id"])
-            .maybe_single()
-            .execute()
         )
         if school.data:
             school_name = school.data["name"]
@@ -160,12 +152,10 @@ def redeem_invite():
     user_id = g.user["id"]
 
     # Get the new user's profile
-    profile = (
+    profile = exec_single(
         sb.table("profiles")
         .select("id")
         .eq("user_id", user_id)
-        .maybe_single()
-        .execute()
     )
     if not profile.data:
         return jsonify({"ok": False, "message": "Complete your profile first."}), 400
@@ -173,12 +163,10 @@ def redeem_invite():
     redeemer_profile_id = profile.data["id"]
 
     # Fetch the invite
-    invite = (
+    invite = exec_single(
         sb.table("invites")
         .select("id, inviter_id, used_by, expires_at")
         .eq("invite_code", invite_code)
-        .maybe_single()
-        .execute()
     )
     if not invite.data:
         return jsonify({"ok": False, "message": "Invalid invite code."}), 404
@@ -202,12 +190,10 @@ def redeem_invite():
     }).eq("id", invite.data["id"]).execute()
 
     # Get inviter's name to reveal on the home page
-    inviter = (
+    inviter = exec_single(
         sb.table("profiles")
         .select("full_name")
         .eq("id", invite.data["inviter_id"])
-        .maybe_single()
-        .execute()
     )
     inviter_name = inviter.data["full_name"] if inviter.data else "Someone"
 
@@ -225,12 +211,10 @@ def my_invites():
     sb = get_supabase()
     user_id = g.user["id"]
 
-    profile = (
+    profile = exec_single(
         sb.table("profiles")
         .select("id")
         .eq("user_id", user_id)
-        .maybe_single()
-        .execute()
     )
     if not profile.data:
         return jsonify({"ok": True, "invites": []})

@@ -2,7 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
-healthcheckPath = "/api/allowed-schools"
+startCommand = "gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 4 --threads 2 --timeout 120"
+healthcheckPath = "/healthz"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 5

@@ -35,6 +35,11 @@ def create_app() -> Flask:
     from app.routes.auth_session import auth_session
     app.register_blueprint(auth_session)
 
+    # Lightweight health check that doesn't depend on Supabase
+    @app.get("/healthz")
+    def healthz():
+        return jsonify({"ok": True}), 200
+
     # Centralized error handlers
     @app.errorhandler(400)
     def bad_request(e):

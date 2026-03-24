@@ -6,7 +6,7 @@ from flask import Blueprint, g, jsonify, request
 from app.auth import require_auth
 from app.config import Config
 from app.notifications import send_match_email
-from app.supabase_client import get_supabase
+from app.supabase_client import exec_single, get_supabase
 
 logger = logging.getLogger(__name__)
 
@@ -19,12 +19,10 @@ def get_matches():
     sb = get_supabase()
 
     # Get this user's profile id
-    profile = (
+    profile = exec_single(
         sb.table("profiles")
         .select("id")
         .eq("user_id", g.user["id"])
-        .maybe_single()
-        .execute()
     )
     if not profile.data:
         return jsonify({"ok": True, "matches": []})
@@ -101,12 +99,10 @@ def respond_to_match(match_id):
         return jsonify({"ok": False, "message": "Action must be 'accepted' or 'declined'."}), 400
 
     sb = get_supabase()
-    profile = (
+    profile = exec_single(
         sb.table("profiles")
         .select("id")
         .eq("user_id", g.user["id"])
-        .maybe_single()
-        .execute()
     )
     if not profile.data:
         return jsonify({"ok": False, "message": "Profile not found."}), 404
@@ -114,12 +110,10 @@ def respond_to_match(match_id):
     profile_id = profile.data["id"]
 
     # Verify this user is part of the match
-    match = (
+    match = exec_single(
         sb.table("matches")
         .select("id, user_a_id, user_b_id")
         .eq("id", match_id)
-        .maybe_single()
-        .execute()
     )
     if not match.data:
         return jsonify({"ok": False, "message": "Match not found."}), 404
@@ -154,12 +148,10 @@ def generate_matches_admin():
             profile_id = match.get(user_field)
             if not profile_id:
                 continue
-            profile = (
+            profile = exec_single(
                 sb.table("profiles")
                 .select("email")
                 .eq("id", profile_id)
-                .maybe_single()
-                .execute()
             )
             if profile.data and profile.data.get("email"):
                 if send_match_email(profile.data["email"]):

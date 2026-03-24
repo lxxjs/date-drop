@@ -4,7 +4,7 @@ import uuid
 from flask import Blueprint, g, jsonify, request
 
 from app.auth import require_auth
-from app.supabase_client import get_supabase
+from app.supabase_client import exec_single, get_supabase
 
 logger = logging.getLogger(__name__)
 
@@ -109,10 +109,9 @@ def get_profile_status():
         sb.table("profiles")
         .select("id")
         .eq("user_id", g.user["id"])
-        .maybe_single()
         .execute()
     )
-    has_profile = result.data is not None
+    has_profile = bool(result.data)
     return jsonify({"ok": True, "email": email, "has_profile": has_profile})
 
 

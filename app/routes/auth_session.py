@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, make_response, request
 
 import jwt
 
+from app.auth import decode_supabase_jwt
 from app.config import Config
 
 auth_session = Blueprint("auth_session", __name__)
@@ -20,12 +21,7 @@ def set_session():
 
     # Verify the token is valid
     try:
-        decoded = jwt.decode(
-            access_token,
-            Config.SUPABASE_JWT_SECRET,
-            algorithms=["HS256"],
-            audience="authenticated",
-        )
+        decoded = decode_supabase_jwt(access_token)
     except jwt.InvalidTokenError:
         return jsonify({"ok": False, "message": "Invalid token."}), 401
 

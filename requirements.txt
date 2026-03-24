@@ -2,6 +2,6 @@ Flask==3.1.*
 gunicorn==23.*
 supabase==2.*
 python-dotenv==1.*
-PyJWT==2.*
+PyJWT[crypto]==2.*
 resend==2.*
 pytest==8.*
